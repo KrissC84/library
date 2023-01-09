@@ -1,12 +1,19 @@
+@font-face {
+  font-family: myFirstFont;
+  src: url(Playfair_Display/PlayfairDisplay-VariableFont_wght.ttf);
+}
+
 * {
   padding: 0;
   margin: 0;
+  font-family: myFirstFont;
 }
 
 body {
   height: 100vh;
   display: grid;
   grid-template-rows: 5rem 1fr 3rem;
+  position: relative;;
 }
 
 body div {
@@ -14,6 +21,10 @@ body div {
 }
 
 .header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
   grid-row: 1 / span 1;
 }
 
@@ -23,16 +34,21 @@ body div {
 
 .table {
   overflow: scroll;
+  grid-row: 2 / span 1;
+  height: auto;
   padding-top: 3rem;
   padding-left: 2rem;
   overflow: scroll;
   justify-items: flex-start;
   align-items: flex-start;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   grid-auto-rows: max-content;
   gap: 35px;
-  background-color: #38424f4d;
+  background-color: #e1f7fac1;
+  background-image: url("./img/1.jpg");
+  background-repeat: round;
+  background-blend-mode: soft-light;
 }
 
 .tiles {
@@ -60,8 +76,8 @@ body div {
   display: flex;
   align-self: center;
   margin-right: 2px;
-  height: 90%;
-  width: auto;
+  height: 25px;
+  width: 25px;
   border-radius: 50%;
   border: none;
   grid-column: 2 / span 1;
@@ -70,17 +86,76 @@ body div {
   background-repeat: no-repeat;
   background-color: #254e8598;
 }
+
 .crossDiv:hover {
   border: 1px solid grey;
-  background-blend-mode: exclusion;
 }
 
 .tilesCont {
+  font-size: smaller;
+  height: auto;
+  overflow-x: auto;
   background-color: azure;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.createElement {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createElement > img {
+  width: 45%;
+}
+
+.createElement > img:hover {
+  border-radius: 50%;
+  border: 0px solid grey;
+  background-color: rgba(169, 169, 169, 0.452);
 }
 
 .footer {
+  font-style: oblique;
   grid-row: 3 / span 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img.toggle {
+  justify-self: end;
+}
+
+.formDiv {
+  padding: 1em;
+  display: none;
+  justify-content: right;
+  height: 30ch;
+  width: 24ch;
+  background-color: #c3fcecf7;
+  position: fixed;
+  top: calc(50% - 15ch);
+  left: calc(50% - 12ch);
+  border: 2px solid rgba(172, 193, 255, 0.366);
+  border-radius: 10px;
+
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+form input{
+  background-color: rgb(244, 245, 249);
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+input[type='submit'],input[type='text'],input[type='number'] {
+  padding: 4px;
 }
