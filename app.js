@@ -64,12 +64,13 @@ function addBookToHtml(book) {
   newDivPages.textContent = `Pages: ${book.pages}`;
   // adding status
   const newDivStatus = document.createElement("img");
-  newDivStatus.className = "toggle";
   newDivStatus.textContent = "Already read";
   if (book.status === false) {
     newDivStatus.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
+    newDivStatus.className = "toggle";
   } else {
     newDivStatus.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
+    newDivStatus.className = "toggle";
   }
 
   // appending all newly created items
@@ -109,11 +110,12 @@ function createNewBookTool() {
 
 // Adding every book that is in Library
 function addBooksOnShelve(library) {
+  // first item is for adding new books
+  createNewBookTool();
   // eslint-disable-next-line no-restricted-syntax
   for (const item of library) {
     addBookToHtml(item);
   }
-  createNewBookTool();
 }
 
 // Deleting book from shelve
@@ -145,60 +147,96 @@ addBookToLibrary(book4);
 addBookToLibrary(book5);
 addBooksOnShelve(myLibrary);
 
+// adding the possibility to delete book directly from the page
+function deleteDirectly() {
+  document.querySelectorAll(".crossDiv").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      const author = e.target.parentNode.parentNode.children[1].childNodes[0].innerText.replace("Author: ", "");
+      // console.log(author);
+      const title = e.target.parentNode.parentNode.children[1].childNodes[1].innerText.replace("Title: ", "");
+      // console.log(title);
+      deleteBookFromHtml(author, title);
+      e.target.parentNode.parentNode.remove();
+    });
+  });
+}
+deleteDirectly();
+
+// changing the status from read/ not read and the opposite
+function changeStatus() {
+  document.querySelectorAll(".toggle").forEach((item) => {
+    item.addEventListener("click", (e) => {
+      const author = e.target.parentNode.childNodes[0].innerText.replace("Author: ", "");
+      // console.log(author);
+      const title = e.target.parentNode.childNodes[1].innerText.replace("Title: ", "");
+      // console.log(title);
+
+      const bookIndex = findBook(author, title, myLibrary);
+      if (bookIndex === -1) {
+        console.log("No book found.");
+      } else if (myLibrary[bookIndex].status === false) {
+        myLibrary[bookIndex].status = true;
+        e.target.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
+        e.target.classList.toggle("read");
+      } else {
+        myLibrary[bookIndex].status = false;
+        e.target.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
+        e.target.classList.toggle("notRead");
+      }
+    });
+  });
+}
+changeStatus();
+
+// flag to prevent eventListners for acting simultaneously
+let protectDiv = 0;
+const formDiv = document.querySelector(".formDiv");
+formDiv.style.display = "none";
+const submit = document.querySelector("input[type=submit]");
+
 function createForm() {
-  const formDiv = document.querySelector(".formDiv");
+  console.log(formDiv.style.display);
+  const controller = new AbortController();
   if (formDiv.style.display === "none") {
     formDiv.style.display = "block";
-    const submit = document.querySelector("input[type=submit]");
-    submit.addEventListener("click", (e) => {
+
+    if (protectDiv === 0) {
+      protectDiv = 1;
+      submit.addEventListener("click", (e) => {
+        const author = document.getElementById("author").value;
+        const title = document.getElementById("name").value;
+        const pages = document.getElementById("page").value;
+        const book = new Book(title, author, pages, false);
+        console.log("book");
+        addBookToLibrary(book);
+        addBookToHtml(book);
+        deleteDirectly();
+        changeStatus();
+        e.preventDefault();
+        controller.abort();
+        protectDiv = 0;
+        formDiv.style.display = "none";
+      }, { signal: controller.signal });
+    }
+  } else {
+    console.log(formDiv.style.display);
+    submit.removeEventListener("click", (e) => {
       const author = document.getElementById("author").value;
       const title = document.getElementById("name").value;
       const pages = document.getElementById("page").value;
       const book = new Book(title, author, pages, false);
-      console.log(book);
+      console.log("book");
       addBookToLibrary(book);
       addBookToHtml(book);
       e.preventDefault();
+      controller.abort();
       formDiv.style.display = "none";
-    });
-    submit.removeEventListener("click");
-  } else {
+    }, { signal: controller.signal });
     formDiv.style.display = "none";
   }
 }
 
 const createBook = document.querySelector(".createElement img");
-createBook.addEventListener("click", () => createForm());
-
-// adding the possibility to delete book directly from the page
-document.querySelectorAll(".crossDiv").forEach((item) => {
-  item.addEventListener("click", (e) => {
-    const author = e.target.parentNode.parentNode.children[1].childNodes[0].innerText.replace("Author: ", "");
-    // console.log(author);
-    const title = e.target.parentNode.parentNode.children[1].childNodes[1].innerText.replace("Title: ", "");
-    // console.log(title);
-    deleteBookFromHtml(author, title);
-    e.target.parentNode.parentNode.remove();
-  });
-});
-
-// changing the status from read/ not read and the opposite
-document.querySelectorAll(".toggle").forEach((item) => {
-  item.addEventListener("click", (e) => {
-    const author = e.target.parentNode.childNodes[0].innerText.replace("Author: ", "");
-    // console.log(author);
-    const title = e.target.parentNode.childNodes[1].innerText.replace("Title: ", "");
-    // console.log(title);
-
-    const bookIndex = findBook(author, title, myLibrary);
-    if (bookIndex === -1) {
-      console.log("No book found.");
-    } else if (myLibrary[bookIndex].status === false) {
-      myLibrary[bookIndex].status = true;
-      e.target.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
-    } else {
-      myLibrary[bookIndex].status = false;
-      e.target.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
-    }
-  });
+createBook.addEventListener("click", () => {
+  createForm();
 });
