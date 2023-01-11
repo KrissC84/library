@@ -40,6 +40,56 @@ function findBook(author, title, library) {
   }
   return indexOfBook;
 }
+// changing the status from read/ not read and the opposite
+function changeStatus() {
+  let book = document.querySelectorAll(".toggle");
+  book = book[book.length - 1];
+  book.addEventListener("click", (e) => {
+    const author = e.target.parentNode.childNodes[1].innerText;
+    console.log(author);
+    const title = e.target.parentNode.childNodes[3].innerText;
+    console.log(title);
+
+    const bookIndex = findBook(author, title, myLibrary);
+    if (bookIndex === -1) {
+      console.log("No book found.");
+    } else if (myLibrary[bookIndex].status === false) {
+      myLibrary[bookIndex].status = true;
+      e.target.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
+      e.target.classList.toggle("read");
+      e.target.previousSibling.textContent = "Read";
+    } else {
+      myLibrary[bookIndex].status = false;
+      e.target.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
+      e.target.previousSibling.textContent = "Not Read";
+    }
+  });
+}
+
+// Deleting book from shelve
+// 1. Listen for the user choice to remove and update the inner library list
+function deleteBookFromHtml(author, title) {
+  const bookIndex = findBook(author, title, myLibrary);
+  if (bookIndex === -1) {
+    console.log("No book found.");
+  } else {
+    removeBookFromLibrary(myLibrary[bookIndex]);
+  }
+}
+
+// adding the possibility to delete book directly from the page
+function deleteDirectly() {
+  let book = document.querySelectorAll(".crossDiv");
+  book = book[book.length - 1];
+  book.addEventListener("click", (e) => {
+    const author = e.target.parentNode.parentNode.children[1].childNodes[0].innerText;
+    // console.log(author);
+    const title = e.target.parentNode.parentNode.children[1].childNodes[1].innerText;
+    // console.log(title);
+    deleteBookFromHtml(author, title);
+    e.target.parentNode.parentNode.remove();
+  });
+}
 
 // Putting new book on a shelve.
 // Create a new tile with the given book
@@ -55,30 +105,49 @@ function addBookToHtml(book) {
   crossDiv.className = "crossDiv";
   // adding author
   const newDivAuthor = document.createElement("h3");
-  newDivAuthor.textContent = `Author: ${book.author}`;
+  newDivAuthor.textContent = "Author:";
+  newDivAuthor.className = "label";
+  const newDivAuthorInner = document.createElement("h3");
+  newDivAuthorInner.textContent = `${book.author}`;
+
   // adding title
   const newDivTitle = document.createElement("h3");
-  newDivTitle.textContent = `Title: ${book.name}`;
+  newDivTitle.textContent = "Title:";
+  newDivTitle.className = "label";
+  const newDivTitleInner = document.createElement("h3");
+  newDivTitleInner.textContent = `${book.name}`;
+
   // adding number of pages
   const newDivPages = document.createElement("h3");
-  newDivPages.textContent = `Pages: ${book.pages}`;
+  newDivPages.textContent = "Pages:";
+  newDivPages.className = "label";
+  const newDivPagesInner = document.createElement("h3");
+  newDivPagesInner.textContent = `${book.pages}`;
+
   // adding status
+  const newDivStatusInner = document.createElement("div");
+  newDivStatusInner.className = "status";
   const newDivStatus = document.createElement("img");
-  newDivStatus.textContent = "Already read";
+
   if (book.status === false) {
+    newDivStatusInner.textContent = "Not Read";
     newDivStatus.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
     newDivStatus.className = "toggle";
   } else {
+    newDivStatusInner.textContent = "Read";
     newDivStatus.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
     newDivStatus.className = "toggle";
   }
 
   // appending all newly created items
   tilesCont.appendChild(newDivAuthor);
+  tilesCont.appendChild(newDivAuthorInner);
   tilesCont.appendChild(newDivTitle);
+  tilesCont.appendChild(newDivTitleInner);
   tilesCont.appendChild(newDivPages);
+  tilesCont.appendChild(newDivPagesInner);
+  tilesCont.appendChild(newDivStatusInner);
   tilesCont.appendChild(newDivStatus);
-
   minHead.appendChild(crossDiv);
   newDiv.appendChild(minHead);
   newDiv.appendChild(tilesCont);
@@ -86,6 +155,8 @@ function addBookToHtml(book) {
   // select place to put new item
   const mainDiv = document.querySelector(".table");
   mainDiv.appendChild(newDiv);
+  changeStatus();
+  deleteDirectly();
 }
 
 function createNewBookTool() {
@@ -118,76 +189,6 @@ function addBooksOnShelve(library) {
   }
 }
 
-// Deleting book from shelve
-// 1. Listen for the user choice to remove and update the inner library list
-function deleteBookFromHtml(author, title) {
-  const bookIndex = findBook(author, title, myLibrary);
-  if (bookIndex === -1) {
-    console.log("No book found.");
-  } else {
-    removeBookFromLibrary(myLibrary[bookIndex]);
-  }
-}
-
-// initial state of the page
-const book1 = new Book("Alice in the jungle.", "J S Bakk", 334, false);
-const book2 = new Book("Alice in the City.", "J S Bakk", 44, true);
-const book3 = new Book("Alibaba is gone.", "Mick Reller", 442, false);
-const book4 = new Book("Ain't nothing till there is.", "Bobby Dylon", 432, true);
-const book5 = new Book("Alibaba is gone 2", "Mick Reller", 442, false);
-
-addBookToLibrary(book1);
-addBookToLibrary(book2);
-addBookToLibrary(book3);
-addBookToLibrary(book4);
-addBookToLibrary(book5);
-addBookToLibrary(book4);
-addBookToLibrary(book5);
-addBookToLibrary(book4);
-addBookToLibrary(book5);
-addBooksOnShelve(myLibrary);
-
-// adding the possibility to delete book directly from the page
-function deleteDirectly() {
-  document.querySelectorAll(".crossDiv").forEach((item) => {
-    item.addEventListener("click", (e) => {
-      const author = e.target.parentNode.parentNode.children[1].childNodes[0].innerText.replace("Author: ", "");
-      // console.log(author);
-      const title = e.target.parentNode.parentNode.children[1].childNodes[1].innerText.replace("Title: ", "");
-      // console.log(title);
-      deleteBookFromHtml(author, title);
-      e.target.parentNode.parentNode.remove();
-    });
-  });
-}
-deleteDirectly();
-
-// changing the status from read/ not read and the opposite
-function changeStatus() {
-  document.querySelectorAll(".toggle").forEach((item) => {
-    item.addEventListener("click", (e) => {
-      const author = e.target.parentNode.childNodes[0].innerText.replace("Author: ", "");
-      // console.log(author);
-      const title = e.target.parentNode.childNodes[1].innerText.replace("Title: ", "");
-      // console.log(title);
-
-      const bookIndex = findBook(author, title, myLibrary);
-      if (bookIndex === -1) {
-        console.log("No book found.");
-      } else if (myLibrary[bookIndex].status === false) {
-        myLibrary[bookIndex].status = true;
-        e.target.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
-        e.target.classList.toggle("read");
-      } else {
-        myLibrary[bookIndex].status = false;
-        e.target.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
-        e.target.classList.toggle("notRead");
-      }
-    });
-  });
-}
-changeStatus();
-
 // flag to prevent eventListners for acting simultaneously
 let protectDiv = 0;
 const formDiv = document.querySelector(".formDiv");
@@ -211,7 +212,6 @@ function createForm() {
         addBookToLibrary(book);
         addBookToHtml(book);
         deleteDirectly();
-        changeStatus();
         e.preventDefault();
         controller.abort();
         protectDiv = 0;
@@ -235,6 +235,20 @@ function createForm() {
     formDiv.style.display = "none";
   }
 }
+
+// initial state of the page
+const book1 = new Book("Alice in the jungle.", "J.S. Ballk", 334, false);
+const book2 = new Book("Alice in the City.", "J.S. Ballk", 464, true);
+const book3 = new Book("Alibaba is gone.", "Mick Reller", 442, false);
+const book4 = new Book("Ain't nothing till there is.", "Bobby Dylon", 432, true);
+const book5 = new Book("SuperNatural Soup", "Rusty Chicken", 442, false);
+
+addBookToLibrary(book1);
+addBookToLibrary(book2);
+addBookToLibrary(book3);
+addBookToLibrary(book4);
+addBookToLibrary(book5);
+addBooksOnShelve(myLibrary);
 
 const createBook = document.querySelector(".createElement img");
 createBook.addEventListener("click", () => {

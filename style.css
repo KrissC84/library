@@ -12,14 +12,18 @@
 body {
   height: 100vh;
   display: grid;
-  grid-template-rows: 5rem 1fr 3rem;
+  grid-template-rows: 5rem 5px 1fr 3rem;
   position: relative;
 }
 
-body div {
+/* body div {
   border: 1px solid black;
-}
+} */
 
+.label {
+  font-size: smaller;
+  font-style: oblique;
+}
 .header {
   display: flex;
   justify-content: center;
@@ -29,16 +33,15 @@ body div {
 }
 
 .main {
-  grid-row: 2 / span 1;
+  grid-row: 3 / span 1;
 }
 
 .table {
-  overflow: scroll;
-  grid-row: 2 / span 1;
+  overflow-y: scroll;
+  grid-row: 3 / span 1;
   height: auto;
   padding-top: 3rem;
   padding-left: 2rem;
-  overflow: scroll;
   justify-items: flex-start;
   align-items: flex-start;
   display: grid;
@@ -92,16 +95,20 @@ body div {
 }
 
 .tilesCont {
+  position: relative;
   font-size: smaller;
   height: auto;
-  overflow-x: auto;
+  overflow-y: auto;
+  overflow-x: none;
   background-color: azure;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   display: grid;
   grid-template-rows: 1fr;
-}
+  padding-right: 10px;
+  padding-left: 10px;
 
+}
 
 .createElement {
   display: flex;
@@ -121,7 +128,7 @@ body div {
 
 .footer {
   font-style: oblique;
-  grid-row: 3 / span 1;
+  grid-row: 4 / span 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -164,4 +171,57 @@ input[type="number"] {
 }
 input[type="submit"]:hover {
   background-color: azure;
+}
+
+.status,
+.img.toggle {
+  display: inline;
+}
+
+.status {
+  position: absolute;
+  bottom: 15px;
+  right: 65px;
+}
+.sidebarIcons {
+  position: absolute;
+  top: -10px;
+  right: -35px;
+  margin-bottom: 7px;
+}
+
+.sidebarIcons > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+
+.sidebarIcons > div div {
+  padding-right: 45px;
+  flex-shrink: 2;
+}
+.sidebarIcons > div > :nth-child(1)::before {
+  content: "";
+  background: url("./icons/home-variant-outline.svg");
+  height: 1rem;
+  width: 1rem;
+  display: block;
+  position: relative;
+  left: -25px;
+  bottom: -20px;
+}
+
+.sidebarIcons > div > :nth-child(2)::before {
+  content: "";
+  background: url("./icons/account-box-outline.svg");
+  height: 1rem;
+  width: 1rem;
+  display: block;
+  position: relative;
+  left: -25px;
+  bottom: -20px;
+}
+
+.tilesCont > :nth-child(4) {
+  overflow-x: auto;
 }
