@@ -1,3 +1,6 @@
+// Storage for all books
+const myLibrary = [];
+
 class Book {
   constructor(name, author, pages, status) {
     this.name = name;
@@ -12,13 +15,11 @@ Book.prototype.info = function () {
   return (`${this.name}, ${this.author}, ${this.pages} pages, ${this.status}`);
 };
 
-// Storage for all books
-const myLibrary = [];
-
 // adding to global variable
-function addBookToLibrary(book) {
-  myLibrary.push(book);
-}
+// eslint-disable-next-line func-names
+Book.prototype.addBookToLibrary = function () {
+  myLibrary.push(this);
+};
 
 function removeBookFromLibrary(book) {
   // finding the index of the book that has to be deleted
@@ -209,7 +210,7 @@ function createForm() {
         const pages = document.getElementById("page").value;
         const book = new Book(title, author, pages, false);
         console.log("book");
-        addBookToLibrary(book);
+        book.addBookToLibrary();
         addBookToHtml(book);
         deleteDirectly();
         e.preventDefault();
@@ -226,7 +227,7 @@ function createForm() {
       const pages = document.getElementById("page").value;
       const book = new Book(title, author, pages, false);
       console.log("book");
-      addBookToLibrary(book);
+      book.addBookToLibrary();
       addBookToHtml(book);
       e.preventDefault();
       controller.abort();
@@ -243,11 +244,12 @@ const book3 = new Book("Alibaba is gone.", "Mick Reller", 442, false);
 const book4 = new Book("Ain't nothing till there is.", "Bobby Dylon", 432, true);
 const book5 = new Book("SuperNatural Soup", "Rusty Chicken", 442, false);
 
-addBookToLibrary(book1);
-addBookToLibrary(book2);
-addBookToLibrary(book3);
-addBookToLibrary(book4);
-addBookToLibrary(book5);
+book1.addBookToLibrary();
+
+book2.addBookToLibrary();
+book3.addBookToLibrary();
+book4.addBookToLibrary();
+book5.addBookToLibrary();
 addBooksOnShelve(myLibrary);
 
 const createBook = document.querySelector(".createElement img");
