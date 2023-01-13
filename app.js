@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 // Storage for all books
 const myLibrary = [];
 
@@ -21,80 +22,22 @@ Book.prototype.addBookToLibrary = function () {
   myLibrary.push(this);
 };
 
-function removeBookFromLibrary(book) {
+// eslint-disable-next-line func-names
+Book.prototype.removeBookFromLibrary = function () {
   // finding the index of the book that has to be deleted
-  const indexOfBook = myLibrary.findIndex((object) => object === book);
+  const indexOfBook = myLibrary.findIndex((object) => object === this);
   // In case there is no such a book in the library
   if (indexOfBook === -1) {
-    console.log(`There is no ${book.name} in the Library`);
+    console.log(`There is no ${this.name} in the Library`);
     return myLibrary;
   }
   return myLibrary.splice(indexOfBook, 1);
-}
-
-function findBook(author, title, library) {
-  // eslint-disable-next-line max-len
-  const indexOfBook = library.findIndex((object) => object.name === title
-  && object.author === author);
-  if (indexOfBook === -1) {
-    return -1;
-  }
-  return indexOfBook;
-}
-// changing the status from read/ not read and the opposite
-function changeStatus() {
-  let book = document.querySelectorAll(".toggle");
-  book = book[book.length - 1];
-  book.addEventListener("click", (e) => {
-    const author = e.target.parentNode.childNodes[1].innerText;
-    console.log(author);
-    const title = e.target.parentNode.childNodes[3].innerText;
-    console.log(title);
-
-    const bookIndex = findBook(author, title, myLibrary);
-    if (bookIndex === -1) {
-      console.log("No book found.");
-    } else if (myLibrary[bookIndex].status === false) {
-      myLibrary[bookIndex].status = true;
-      e.target.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
-      e.target.classList.toggle("read");
-      e.target.previousSibling.textContent = "Read";
-    } else {
-      myLibrary[bookIndex].status = false;
-      e.target.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
-      e.target.previousSibling.textContent = "Not Read";
-    }
-  });
-}
-
-// Deleting book from shelve
-// 1. Listen for the user choice to remove and update the inner library list
-function deleteBookFromHtml(author, title) {
-  const bookIndex = findBook(author, title, myLibrary);
-  if (bookIndex === -1) {
-    console.log("No book found.");
-  } else {
-    removeBookFromLibrary(myLibrary[bookIndex]);
-  }
-}
-
-// adding the possibility to delete book directly from the page
-function deleteDirectly() {
-  let book = document.querySelectorAll(".crossDiv");
-  book = book[book.length - 1];
-  book.addEventListener("click", (e) => {
-    const author = e.target.parentNode.parentNode.children[1].childNodes[0].innerText;
-    // console.log(author);
-    const title = e.target.parentNode.parentNode.children[1].childNodes[1].innerText;
-    // console.log(title);
-    deleteBookFromHtml(author, title);
-    e.target.parentNode.parentNode.remove();
-  });
-}
+};
 
 // Putting new book on a shelve.
 // Create a new tile with the given book
-function addBookToHtml(book) {
+// eslint-disable-next-line func-names
+Book.prototype.addBookToHtml = function () {
   // new book
   const newDiv = document.createElement("div");
   newDiv.className = "tiles";
@@ -109,28 +52,28 @@ function addBookToHtml(book) {
   newDivAuthor.textContent = "Author:";
   newDivAuthor.className = "label";
   const newDivAuthorInner = document.createElement("h3");
-  newDivAuthorInner.textContent = `${book.author}`;
+  newDivAuthorInner.textContent = `${this.author}`;
 
   // adding title
   const newDivTitle = document.createElement("h3");
   newDivTitle.textContent = "Title:";
   newDivTitle.className = "label";
   const newDivTitleInner = document.createElement("h3");
-  newDivTitleInner.textContent = `${book.name}`;
+  newDivTitleInner.textContent = `${this.name}`;
 
   // adding number of pages
   const newDivPages = document.createElement("h3");
   newDivPages.textContent = "Pages:";
   newDivPages.className = "label";
   const newDivPagesInner = document.createElement("h3");
-  newDivPagesInner.textContent = `${book.pages}`;
+  newDivPagesInner.textContent = `${this.pages}`;
 
   // adding status
   const newDivStatusInner = document.createElement("div");
   newDivStatusInner.className = "status";
   const newDivStatus = document.createElement("img");
 
-  if (book.status === false) {
+  if (this.status === false) {
     newDivStatusInner.textContent = "Not Read";
     newDivStatus.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
     newDivStatus.className = "toggle";
@@ -156,8 +99,70 @@ function addBookToHtml(book) {
   // select place to put new item
   const mainDiv = document.querySelector(".table");
   mainDiv.appendChild(newDiv);
+  // eslint-disable-next-line no-use-before-define
   changeStatus();
-  deleteDirectly();
+  this.deleteDirectly();
+};
+
+// adding the possibility to delete book directly from the page
+// eslint-disable-next-line func-names
+Book.prototype.deleteDirectly = function () {
+  let book = document.querySelectorAll(".crossDiv");
+  book = book[book.length - 1];
+  book.addEventListener("click", (e) => {
+    const author = e.target.parentNode.parentNode.children[1].childNodes[0].innerText;
+    // console.log(author);
+    const title = e.target.parentNode.parentNode.children[1].childNodes[1].innerText;
+    // console.log(title);
+    deleteBookFromHtml(author, title);
+    e.target.parentNode.parentNode.remove();
+  });
+};
+
+function findBookIndex(author, title, library) {
+  // eslint-disable-next-line max-len
+  const indexOfBook = library.findIndex((object) => object.name === title
+  && object.author === author);
+  if (indexOfBook === -1) {
+    return -1;
+  }
+  return indexOfBook;
+}
+// changing the status from read/ not read and the opposite
+function changeStatus() {
+  let book = document.querySelectorAll(".toggle");
+  book = book[book.length - 1];
+  book.addEventListener("click", (e) => {
+    const author = e.target.parentNode.childNodes[1].innerText;
+    console.log(author);
+    const title = e.target.parentNode.childNodes[3].innerText;
+    console.log(title);
+
+    const bookIndex = findBookIndex(author, title, myLibrary);
+    if (bookIndex === -1) {
+      console.log("No book found.");
+    } else if (myLibrary[bookIndex].status === false) {
+      myLibrary[bookIndex].status = true;
+      e.target.setAttribute("src", "./icons/toggle_on_FILL0_wght400_GRAD0_opsz48.svg");
+      e.target.classList.toggle("read");
+      e.target.previousSibling.textContent = "Read";
+    } else {
+      myLibrary[bookIndex].status = false;
+      e.target.setAttribute("src", "./icons/toggle_off_FILL0_wght400_GRAD0_opsz48.svg");
+      e.target.previousSibling.textContent = "Not Read";
+    }
+  });
+}
+
+// Deleting book from shelve
+// 1. Listen for the user choice to remove and update the inner library list
+function deleteBookFromHtml(author, title) {
+  const bookIndex = findBookIndex(author, title, myLibrary);
+  if (bookIndex === -1) {
+    console.log("No book found.");
+  } else {
+    myLibrary[bookIndex].removeBookFromLibrary();
+  }
 }
 
 function createNewBookTool() {
@@ -186,7 +191,7 @@ function addBooksOnShelve(library) {
   createNewBookTool();
   // eslint-disable-next-line no-restricted-syntax
   for (const item of library) {
-    addBookToHtml(item);
+    item.addBookToHtml();
   }
 }
 
@@ -205,15 +210,17 @@ function createForm() {
     if (protectDiv === 0) {
       protectDiv = 1;
       submit.addEventListener("click", (e) => {
+        // submit does not reload page
+        e.preventDefault();
+
         const author = document.getElementById("author").value;
         const title = document.getElementById("name").value;
         const pages = document.getElementById("page").value;
         const book = new Book(title, author, pages, false);
         console.log("book");
         book.addBookToLibrary();
-        addBookToHtml(book);
-        deleteDirectly();
-        e.preventDefault();
+        book.addBookToHtml();
+        book.deleteDirectly();
         controller.abort();
         protectDiv = 0;
         formDiv.style.display = "none";
@@ -228,7 +235,7 @@ function createForm() {
       const book = new Book(title, author, pages, false);
       console.log("book");
       book.addBookToLibrary();
-      addBookToHtml(book);
+      book.addBookToHtml();
       e.preventDefault();
       controller.abort();
       formDiv.style.display = "none";
@@ -245,7 +252,6 @@ const book4 = new Book("Ain't nothing till there is.", "Bobby Dylon", 432, true)
 const book5 = new Book("SuperNatural Soup", "Rusty Chicken", 442, false);
 
 book1.addBookToLibrary();
-
 book2.addBookToLibrary();
 book3.addBookToLibrary();
 book4.addBookToLibrary();
